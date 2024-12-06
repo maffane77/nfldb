@@ -15,7 +15,6 @@ const PassingStats = () => {
     setError("");
     setLoading(true);
 
-    // Fetch passing stats by player name
     axios
       .get(`http://localhost:8080/api/stats/player/${searchTerm}/passing`)
       .then((response) => {

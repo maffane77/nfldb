@@ -4,19 +4,35 @@ import axios from "axios";
 const RushingStats = () => {
   const [stats, setStats] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
+  const handleSearch = () => {
+    if (!searchTerm) {
+      setError("Please enter a player name.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+
     axios
-      .get("http://localhost:8080/api/stats/rushing")
-      .then((response) => setStats(response.data))
-      .catch((error) => console.error("Error fetching rushing stats:", error));
-  }, []);
+      .get(`http://localhost:8080/api/stats/player/${searchTerm}/rushing`)
+      .then((response) => {
+        setStats(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching rushing stats:", error);
+        setError("Player not found or no data available.");
+        setLoading(false);
+      });
+  };
 
-  const filteredStats = stats.filter(
-    (stat) =>
-      stat.playerId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (stat.playerName && stat.playerName.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   return (
     <div className="overflow-x-auto">
@@ -25,9 +41,10 @@ const RushingStats = () => {
       <div className="mb-4 flex justify-center">
         <input
           type="text"
-          placeholder="Search by Player ID or Name"
+          placeholder="Search by Player Name"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={handleKeyDown}
           className="w-1/3 px-2 py-1 border border-gray-300 rounded-md"
         />
       </div>
@@ -55,7 +72,7 @@ const RushingStats = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredStats.map((stat) => (
+          {stats.map((stat) => (
             <tr key={`${stat.playerId}-${stat.season}`}>
               <td className="border px-4 py-2">{stat.playerId}</td>
               <td className="border px-4 py-2">{stat.season}</td>
