@@ -21,9 +21,12 @@ import java.util.List;
 @RequestMapping("/api/stats")
 public class StatisticsController {
 
-    @Autowired
     private StatisticsService statsService;
 
+    public StatisticsController(StatisticsService statsService) {
+        this.statsService = statsService;
+    }
+    
     @GetMapping("/player/{name}/passing")
     public List<PassingStats> getPassingStats(@PathVariable String name) {
         Player player = statsService.findPlayerByName(name);

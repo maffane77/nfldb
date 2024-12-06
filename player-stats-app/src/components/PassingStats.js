@@ -29,6 +29,12 @@ const PassingStats = () => {
       });
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  }
+
   return (
     <div className="overflow-x-auto">
       <h2 className="text-2xl font-bold mb-4">Passing Statistics</h2>
@@ -36,9 +42,10 @@ const PassingStats = () => {
       <div className="mb-4 flex justify-center">
         <input
           type="text"
-          placeholder="Search by Player ID or Name"
+          placeholder="Search by Player Name"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={handleKeyDown}
           className="w-1/3 px-2 py-1 border border-gray-300 rounded-md"
         />
       </div>
