@@ -4,19 +4,30 @@ import axios from "axios";
 const PassingStats = () => {
   const [stats, setStats] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
+  const handleSearch = () => {
+    if (!searchTerm) {
+      setError("Please enter a player name.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+
+    // Fetch passing stats by player name
     axios
-      .get("http://localhost:8080/api/stats/passing")
-      .then((response) => setStats(response.data))
-      .catch((error) => console.error("Error fetching passing stats:", error));
-  }, []);
-
-  const filteredStats = stats.filter(
-    (stat) =>
-      stat.playerId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (stat.playerName && stat.playerName.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+      .get(`http://localhost:8080/api/stats/player/${searchTerm}/passing`)
+      .then((response) => {
+        setStats(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching passing stats:", error);
+        setError("Player not found or no data available.");
+        setLoading(false);
+      });
+  };
 
   return (
     <div className="overflow-x-auto">
@@ -63,7 +74,7 @@ const PassingStats = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredStats.map((stat) => (
+          {stats.map((stat) => (
             <tr key={`${stat.playerId}-${stat.season}`}>
               <td className="border px-4 py-2">{stat.playerId}</td>
               <td className="border px-4 py-2">{stat.season}</td>

@@ -13,4 +13,8 @@ public class Player {
     private Integer age;
     private String currentTeam;
     private String position;
+    
+    public String getPlayerId() {
+        return playerId;
+    }
 }
