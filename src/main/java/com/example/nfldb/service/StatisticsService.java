@@ -14,7 +14,7 @@ import com.example.nfldb.entity.ReceivingStats;
 import com.example.nfldb.entity.RushingStats;
 
 import java.util.List;
-
+@Service
 public class StatisticsService {
     @Autowired
     private PlayerRepository playerRepository;
